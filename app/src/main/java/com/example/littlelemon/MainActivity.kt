@@ -30,31 +30,25 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 class MainActivity : ComponentActivity() {
     private val httpClient = HttpClient(Android) {
         install(ContentNegotiation) {
             json(contentType = ContentType("text", "plain"))
         }
     }
-
     private val database by lazy {
         Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LittleLemonTheme {
-                // Retrieve items from Room database
-                // add databaseMenuItems code here
                 val dataBaseMenuItems by database.menuItemDao().getAll().observeAsState(emptyList())
 
-                // add orderMenuItems variable here
                 var orderMenuItems by remember {
                     mutableStateOf(false)
                 }
-                // add menuItems variable here
+
                 var menuItems = if (orderMenuItems) {
                     dataBaseMenuItems.sortedBy { it.title }
                 } else {
@@ -70,7 +64,7 @@ class MainActivity : ComponentActivity() {
                         contentDescription = "logo",
                         modifier = Modifier.padding(50.dp)
                     )
-                    // add Button code here
+
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -81,9 +75,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Text("Tap to Order By Name")
                     }
-                    // add searchPhrase variable here
+
                     var searchPhrase by remember { mutableStateOf("") }
-                    // Add OutlinedTextField
+
                     OutlinedTextField(
                         value = searchPhrase,
                         onValueChange = { searchPhrase = it },
@@ -92,14 +86,14 @@ class MainActivity : ComponentActivity() {
                             .padding(start = 50.dp, end = 50.dp),
                         label = { Text("Search") }
                     )
-                    // add is not empty check here
+
                     if (searchPhrase.isNotEmpty()) {
                         val filteredItems = menuItems.filter {
                             it.title.lowercase().contains(searchPhrase.lowercase())
                         }
                         menuItems = filteredItems
                     }
-                    //Display menu items by passing dataBaseMenuItems
+
                     MenuItemsList(items = menuItems)
                 }
             }
@@ -107,30 +101,22 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             if (database.menuItemDao().isEmpty()) {
-                // add code here
-                // Retrieve data from the network
                 val networkMenu = fetchMenu()
-                //Save data in the database
                 saveMenuToDatabase(networkMenu)
             }
         }
     }
-
     private suspend fun fetchMenu(): List<MenuItemNetwork> {
-        TODO("Retrieve data")
         val response =
             httpClient.get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/littleLemonSimpleMenu.json")
         val result = response.body<MenuNetwork>().menu
         return result
     }
-
     private fun saveMenuToDatabase(menuItemsNetwork: List<MenuItemNetwork>) {
-        // Convert network menu items to Room menu items and save them to the database
         val menuItemsRoom = menuItemsNetwork.map { it.toMenuItemRoom() }
         database.menuItemDao().insertAll(*menuItemsRoom.toTypedArray())
     }
 }
-
 @Composable
 private fun MenuItemsList(items: List<MenuItemRoom>) {
     LazyColumn(

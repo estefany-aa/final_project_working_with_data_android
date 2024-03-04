@@ -1,16 +1,21 @@
 # Restaurant Menu App
 
-This repository contains the source code for the Restaurant Menu App, which is the final project for the Meta course "Working with Data in Android" on Coursera.
+## Overview
+
+This repository contains the source code for the Restaurant Menu App, which is the final project for the Meta course [Working with Data in Android] on Coursera.
+(https://www.coursera.org/learn/working-with-data-in-android)
 
 ## Project Description
 
-The goal of this project was to improve an existing app by accomplishing the following tasks:
+The goal of this project was to improve an existing Restaurant Menu app by accomplishing the following tasks:
 
 - Queried a REST API on a remote server and decoded the resulting JSON object into a valid Kotlin class format.
 - Stored and retrieved data in a Room database.
 - Added sorting and filtering functionality to display food menu data.
+  
+## App Screenshots
 
-For more details, you can access the Coursera course [here](https://www.coursera.org/learn/working-with-data-in-android).
+<img src="screenshots/screenshots.png"/>
 
 ## Tech Stack
 
